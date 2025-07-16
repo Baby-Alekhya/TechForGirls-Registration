@@ -1,54 +1,108 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: url("assets/background.jpg") no-repeat center center fixed;
-  background-size: cover;
+/* Reset */
+* {
   margin: 0;
   padding: 0;
-  color: #333;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+              url("assets/background.jpg") no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .container {
+  background-color: #ffffffdd;
+  padding: 40px;
+  border-radius: 16px;
   max-width: 500px;
-  margin: 50px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
+/* Header */
 .logo {
   width: 80px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="number"],
-input[type="file"],
-button {
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #3f3f3f;
+}
+
+h1 span {
+  color: #ff4d94;
+}
+
+/* Illustration */
+.illustration {
+  width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  margin-bottom: 25px;
+}
+
+/* Form Inputs */
+form input[type="text"],
+form input[type="tel"],
+form input[type="email"],
+form input[type="file"] {
   width: 100%;
   padding: 12px;
-  margin: 10px 0;
-  border-radius: 10px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: border 0.3s;
 }
 
+form input:focus {
+  border-color: #ff4d94;
+  outline: none;
+}
+
+/* Buttons */
 button {
-  background: #ff69b4;
+  background-color: #ff4d94;
   color: white;
+  padding: 12px 20px;
   border: none;
-  font-weight: bold;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.3s;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background: #d64b94;
+  background-color: #e03e83;
 }
 
-#message {
+/* Counter */
+#shareCounter {
+  margin: 10px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Success */
+#successMessage {
   margin-top: 20px;
-  font-weight: bold;
   color: green;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.checkmark {
+  width: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
 }

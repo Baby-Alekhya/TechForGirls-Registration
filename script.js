@@ -1,70 +1,67 @@
-let clickCount = 0;
-const shareBtn = document.getElementById("shareBtn");
-const shareCountDisplay = document.getElementById("shareCount");
+let shareCount = 0;
+const maxShares = 5;
 
-if (localStorage.getItem("submitted")) {
-  document.querySelectorAll("input, button").forEach(el => el.disabled = true);
-  document.getElementById("message").innerText = "🎉 You already submitted. Thanks!";
+// Show default counter or success state
+if (localStorage.getItem("submitted") === "true") {
+  document.getElementById("registrationForm").style.display = "none";
+  document.getElementById("successMessage").style.display = "block";
+} else {
+  document.getElementById("shareCounter").innerText = `Click count: ${shareCount}/5`;
 }
 
-shareBtn.addEventListener("click", () => {
-  if (clickCount < 5) {
-    clickCount++;
-    shareCountDisplay.innerText = `Click count: ${clickCount}/5`;
-    const text = "Hey Buddy, Join Tech For Girls Community";
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-    if (clickCount === 5) {
-      alert("Sharing complete. Please continue.");
+function shareOnWhatsApp() {
+  if (shareCount < maxShares) {
+    const message = encodeURIComponent(
+      `🚀 Hey Buddy!\n\nJoin the *Tech For Girls* community and be part of something amazing!\n\nRegister here: https://script.google.com/macros/s/AKfycbwAFxkDtk1AD2UmWjT9jt1lXvTe2T9mWQAUAZwv6i7i5ULNTODF0OsYq-eQ5bMikXxerA/exec`
+    );
+
+    const url = `https://wa.me/?text=${message}`;
+    console.log("Opening WhatsApp with URL:", url); // For debugging
+    window.open(url, "_blank");
+
+    shareCount++;
+    document.getElementById("shareCounter").innerText = `Click count: ${shareCount}/5`;
+
+    if (shareCount === maxShares) {
+      alert("✅ Sharing complete. You can now submit the form.");
     }
   }
-});
+}
 
-document.getElementById("registrationForm").addEventListener("submit", async function (e) {
+document.getElementById("registrationForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  if (clickCount < 5) {
-    alert("Please complete WhatsApp sharing (5/5) before submitting.");
+  if (shareCount < maxShares) {
+    alert("⚠️ Please complete sharing on WhatsApp before submitting (5/5).");
     return;
   }
 
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-  const email = document.getElementById("email").value;
-  const college = document.getElementById("college").value;
-  const screenshotFile = document.getElementById("screenshot").files[0];
+  // Collect form data
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const college = document.getElementById("college").value.trim();
 
-  if (!screenshotFile) {
-    alert("Please upload your screenshot.");
-    return;
-  }
+  // Your working Google Apps Script URL
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwAFxkDtk1AD2UmWjT9jt1lXvTe2T9mWQAUAZwv6i7i5ULNTODF0OsYq-eQ5bMikXxerA/exec';
 
-  const formData = new FormData();
-  formData.append("file", screenshotFile);
-  formData.append("upload_preset", "your_upload_preset"); // For Cloudinary or similar
-
-  const upload = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
-    method: "POST",
-    body: formData
+  // Send to Google Sheets
+  fetch(scriptURL, {
+    method: 'POST',
+    body: new URLSearchParams({
+      'Name': name,
+      'Phone': phone,
+      'Email': email,
+      'College': college
+    })
+  })
+  .then(response => {
+    document.getElementById("registrationForm").style.display = "none";
+    document.getElementById("successMessage").style.display = "block";
+    localStorage.setItem("submitted", "true");
+  })
+  .catch(error => {
+    alert("❌ Submission failed. Please try again.");
+    console.error("Error!", error.message);
   });
-
-  const uploadResult = await upload.json();
-
-  const data = {
-    name,
-    phone,
-    email,
-    college,
-    screenshot: uploadResult.secure_url
-  };
-
-  await fetch("https://script.google.com/macros/s/AKfycbx-LrnuvrdSO2xkrDlsm5b9Lk5H84nza-4PnE1QjIIPRBUCuSHDBi0TzAxKQ37bEabl/exec", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" }
-  });
-
-  localStorage.setItem("submitted", "true");
-  document.getElementById("registrationForm").reset();
-  document.getElementById("message").innerText = "🎉 Your submission has been recorded. Thanks for being part of Tech for Girls!";
-  document.querySelectorAll("input, button").forEach(el => el.disabled = true);
 });
